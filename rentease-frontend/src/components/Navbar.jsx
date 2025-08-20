@@ -13,6 +13,7 @@ const Navbar = ({ user, handleLogout }) => {
           <>
             <Link to="/browse" className="nav-link">Browse Items</Link>
             <Link to="/list" className="nav-link">List Item</Link>
+            <Link to="/profile" className="nav-link">Profile</Link>
             <button onClick={handleLogout} className="nav-link logout-btn">Logout</button>
           </>
         ) : (

@@ -8,6 +8,8 @@ import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { loginUser, registerUser } from "./services/api.js";
 import './App.css';
+import UserProfile from "./components/UserProfile.jsx";
+import ProductDetails from "./components/ProductDetails.jsx";
 
 function App() {
   const navigate = useNavigate();
@@ -86,52 +88,66 @@ function App() {
   return (
     <div>
       <Navbar user={user} handleLogout={handleLogout} />
-      <div className="container">
-        <Routes>
-          <Route path="/" element={<h1 style={{ padding: '2rem' }}>Welcome to RentEase{user ? `, ${user.username}!` : '!'}</h1>} />
-          <Route 
-            path="/list" 
-            element={
-              <ProtectedRoute user={user}>
-                <ListItem user={user} />
-              </ProtectedRoute>
-            } 
+      <Routes>
+        <Route path="/" element={<h1 style={{ padding: '2rem' }}>Welcome to RentEase{user ? `, ${user.username}!` : '!'}</h1>} />
+        <Route 
+          path="/list" 
+          element={
+            <ProtectedRoute user={user}>
+              <ListItem user={user} />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/browse" 
+          element={
+            <ProtectedRoute user={user}>
+              <BrowseItems user={user} />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute user={user}>
+              <UserProfile user={user} />
+            </ProtectedRoute>
+          } 
+        />
+       <Route 
+          path="/product/:id" 
+          element={
+            <ProtectedRoute user={user}>
+            <ProductDetails user={user} />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="/login" element={
+          <Login
+            email={loginEmail}
+            setEmail={setLoginEmail}
+            password={loginPassword}
+            setPassword={setLoginPassword}
+            handleLogin={handleLogin}
+            message={message}
+            error={error}
           />
-          <Route 
-            path="/browse" 
-            element={
-              <ProtectedRoute user={user}>
-                <BrowseItems user={user} />
-              </ProtectedRoute>
-            } 
+        } />
+        <Route path="/register" element={
+          <Register
+            username={username}
+            setUsername={setUsername}
+            email={registerEmail}
+            setEmail={setRegisterEmail}
+            password={registerPassword}
+            setPassword={setRegisterPassword}
+            handleRegister={handleRegister}
+            message={message}
+            error={error}
           />
-          <Route path="/login" element={
-                        <Login
-              email={loginEmail}
-              setEmail={setLoginEmail}
-              password={loginPassword}
-              setPassword={setLoginPassword}
-              handleLogin={handleLogin}
-              message={message}
-              error={error}
-            />
-          } />
-          <Route path="/register" element={
-            <Register
-              username={username}
-              setUsername={setUsername}
-              email={registerEmail}
-              setEmail={setRegisterEmail}
-              password={registerPassword}
-              setPassword={setRegisterPassword}
-              handleRegister={handleRegister}
-              message={message}
-              error={error}
-            />
-          } />
-          <Route path="*" element={<h1 style={{ padding: '2rem' }}>Page Not Found</h1>} />
-        </Routes>
-      </div>
+        } />
+        <Route path="*" element={<h1 style={{ padding: '2rem' }}>Page Not Found</h1>} />
+      </Routes>
     </div>
   );
 }

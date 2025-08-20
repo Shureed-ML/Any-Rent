@@ -39,7 +39,8 @@ const ListItem = ({ user }) => {
         try {
             const itemData = {
                 ...formData,
-                price: parseFloat(formData.price)
+                price: parseFloat(formData.price),
+                ownerId: user && user._id // Add ownerId from user
             };
 
             await createItem(itemData);
