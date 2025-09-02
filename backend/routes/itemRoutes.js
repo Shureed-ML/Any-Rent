@@ -1,6 +1,36 @@
 const router = require('express').Router();
 const Item = require('../models/Item');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+const express = require('express');
+
+// Configure multer for file upload
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    },
+    fileFilter: function (req, file, cb) {
+        const filetypes = /jpeg|jpg|png|gif/;
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = filetypes.test(file.mimetype);
+        if (extname && mimetype) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed!'));
+        }
+    }
+});
 
 // Middleware to verify token
 const verifyToken = (req, res, next) => {
@@ -17,15 +47,31 @@ const verifyToken = (req, res, next) => {
 };
 
 // Create a new item
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, upload.single('image'), async (req, res) => {
     try {
-        const newItem = new Item({
-            ...req.body,
+        console.log('Request body:', req.body); // For debugging
+        
+        const itemData = {
+            title: req.body.title,
+            description: req.body.description,
+            price: Number(req.body.price),
+            location: req.body.location,
+            category: req.body.category,
             owner: req.userId
-        });
+        };
+        
+        if (req.file) {
+            // If a file was uploaded, add the file path
+            itemData.imageUrl = `/uploads/${req.file.filename}`;
+        }
+
+        console.log('Item data to save:', itemData); // For debugging
+        
+        const newItem = new Item(itemData);
         const savedItem = await newItem.save();
         res.status(201).json(savedItem);
     } catch (err) {
+        console.error('Error creating item:', err); // For debugging
         res.status(500).json({ error: err.message });
     }
 });
@@ -45,6 +91,16 @@ router.get('/user', verifyToken, async (req, res) => {
     try {
         const items = await Item.find({ owner: req.userId });
         res.status(200).json(items);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+// Get a single item by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const item = await Item.findById(req.params.id).populate('owner', 'username');
+        if (!item) return res.status(404).json({ error: 'Item not found' });
+        res.status(200).json(item);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

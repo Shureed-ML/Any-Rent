@@ -9,7 +9,9 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { loginUser, registerUser } from "./services/api.js";
 import './App.css';
 import UserProfile from "./components/UserProfile.jsx";
-import ProductDetails from "./components/ProductDetails.jsx";
+import ItemDetails from "./components/ItemDetails.jsx";
+import Inbox from "./components/Inbox.jsx";
+import ChatPage from "./components/ChatPage.jsx";
 
 function App() {
   const navigate = useNavigate();
@@ -114,13 +116,35 @@ function App() {
             </ProtectedRoute>
           } 
         />
-       <Route 
-          path="/product/:id" 
+        <Route 
+          path="/inbox"
           element={
             <ProtectedRoute user={user}>
-            <ProductDetails user={user} />
+              <Inbox user={user} />
             </ProtectedRoute>
-          } 
+          }
+        />
+        <Route 
+          path="/chat/:otherUserId/:itemId"
+          element={
+            <ProtectedRoute user={user}>
+              <ChatPage user={user} />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/chat/:otherUserId"
+          element={
+            <ProtectedRoute user={user}>
+              <ChatPage user={user} />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/product/:id" 
+          element={
+            <ItemDetails user={user} />
+          }
         />
         <Route path="/login" element={
           <Login

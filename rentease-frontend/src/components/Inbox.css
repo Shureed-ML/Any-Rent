@@ -1,0 +1,53 @@
+.inbox-container {
+    padding: 20px;
+}
+
+.conversation-list {
+    list-style: none;
+    padding: 0;
+}
+
+.conversation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.conv-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.conv-name {
+    font-weight: 600;
+}
+
+.conv-last {
+    color: #666;
+}
+
+.conv-meta {
+    text-align: right;
+}
+
+.conv-time {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.conv-open {
+    display: inline-block;
+    margin-top: 6px;
+    background: #007bff;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.inbox-loading, .inbox-error {
+    padding: 20px;
+    color: #666;
+}

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getAllItems } from '../services/api';
+import { getRentedItems } from '../services/rentalApi';
 import { Link } from 'react-router-dom';
 import './BrowseItems.css';
 
 const BrowseItems = ({ user }) => {
   const [items, setItems] = useState([]);
+  const [rentedItems, setRentedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
@@ -13,7 +15,10 @@ const BrowseItems = ({ user }) => {
 
   useEffect(() => {
     fetchItems();
-  }, []);
+    if (user) {
+      fetchRentedItems();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (showSearch && searchRef.current) {
@@ -43,7 +48,16 @@ const BrowseItems = ({ user }) => {
     }
   };
 
-  // Filter out user's own items (handle both object and string cases)
+  const fetchRentedItems = async () => {
+    try {
+      const data = await getRentedItems();
+      setRentedItems(data);
+    } catch (err) {
+      console.error('Failed to fetch rented items:', err);
+    }
+  };
+
+  // Filter out user's own items and rented items
   let filteredItems = user ? items.filter(item => {
     if (!item.owner) return true;
     if (typeof item.owner === 'object' && item.owner._id) {
@@ -51,6 +65,12 @@ const BrowseItems = ({ user }) => {
     }
     return item.owner !== user._id;
   }) : items;
+
+  // Filter out rented items
+  if (user && rentedItems.length > 0) {
+    const rentedItemIds = rentedItems.map(rental => rental.itemId._id);
+    filteredItems = filteredItems.filter(item => !rentedItemIds.includes(item._id));
+  }
 
   // Apply search filter
   if (search.trim()) {
@@ -102,7 +122,10 @@ const BrowseItems = ({ user }) => {
               <div className="item-card">
                 {item.imageUrl && (
                   <div className="item-image">
-                    <img src={item.imageUrl} alt={item.title} />
+                    <img 
+                      src={item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:5000${item.imageUrl}`} 
+                      alt={item.title} 
+                    />
                   </div>
                 )}
                 <h3 className="item-title">{item.title}</h3>

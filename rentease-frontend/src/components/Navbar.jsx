@@ -12,6 +12,7 @@ const Navbar = ({ user, handleLogout }) => {
         {user ? (
           <>
             <Link to="/browse" className="nav-link">Browse Items</Link>
+            <Link to="/inbox" className="nav-link">Inbox</Link>
             <Link to="/list" className="nav-link">List Item</Link>
             <Link to="/profile" className="nav-link">Profile</Link>
             <button onClick={handleLogout} className="nav-link logout-btn">Logout</button>

@@ -1,16 +1,70 @@
 const API_URL = 'http://localhost:5000/api';
 
-// Item related API calls
-export const createItem = async (itemData) => {
+// Chat related API calls
+export const createChatRoom = async (otherUserId) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/items`, {
+        const response = await fetch(`${API_URL}/chat/room`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(itemData),
+            body: JSON.stringify({ otherUserId }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to create chat room');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const sendMessage = async (roomId, message) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/chat/message`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ roomId, message }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to send message');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getMessages = async (roomId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/chat/messages/${roomId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to get messages');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Item related API calls
+export const createItem = async (formData) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/items`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData,
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Failed to create item');
@@ -30,6 +84,17 @@ export const getAllItems = async () => {
         throw error;
     }
 };
+    // Get a single item by ID
+    export const getItem = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/items/${id}`);
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Failed to fetch item');
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    };
 
 export const getUserItems = async () => {
     try {
@@ -73,6 +138,22 @@ export const deleteItem = async (id) => {
         throw error;
     }
 };
+
+    export const getInbox = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/chat/inbox`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Failed to fetch inbox');
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    };
 
 export const updateItem = async (id, itemData) => {
     try {
@@ -121,6 +202,57 @@ export const loginUser = async (credentials) => {
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Login failed');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Review related API calls
+export const createReview = async (itemId, reviewData) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                itemId,
+                ...reviewData
+            }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to create review');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getItemReviews = async (itemId) => {
+    try {
+        const response = await fetch(`${API_URL}/reviews/item/${itemId}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to fetch reviews');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteReview = async (reviewId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to delete review');
         return data;
     } catch (error) {
         throw error;

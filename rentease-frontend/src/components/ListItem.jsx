@@ -11,7 +11,8 @@ const ListItem = ({ user }) => {
         price: '',
         location: '',
         category: '',
-        imageUrl: ''
+        image: null,
+        imagePreview: null
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -24,11 +25,21 @@ const ListItem = ({ user }) => {
     }, [user, navigate]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        const { name, value, files } = e.target;
+        
+        if (name === 'image' && files && files[0]) {
+            const file = files[0];
+            setFormData(prev => ({
+                ...prev,
+                image: file,
+                imagePreview: URL.createObjectURL(file)
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -37,13 +48,26 @@ const ListItem = ({ user }) => {
         setError('');
 
         try {
-            const itemData = {
-                ...formData,
-                price: parseFloat(formData.price),
-                ownerId: user && user._id // Add ownerId from user
-            };
+            // Validate required fields
+            if (!formData.title || !formData.description || !formData.price || !formData.location || !formData.category) {
+                throw new Error('Please fill in all required fields');
+            }
 
-            await createItem(itemData);
+            const formDataToSend = new FormData();
+            
+            // Ensure all required fields are included
+            formDataToSend.append('title', formData.title.trim());
+            formDataToSend.append('description', formData.description.trim());
+            formDataToSend.append('price', formData.price);
+            formDataToSend.append('location', formData.location.trim());
+            formDataToSend.append('category', formData.category);
+            
+            if (formData.image) {
+                formDataToSend.append('image', formData.image);
+            }
+
+            const response = await createItem(formDataToSend);
+            console.log('Item created:', response); // For debugging
             setMessage('Item listed successfully!');
             navigate('/browse');
         } catch (err) {
@@ -129,14 +153,24 @@ const ListItem = ({ user }) => {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="imageUrl">Image URL (optional)</label>
+                    <label htmlFor="image">Item Image</label>
                     <input
-                        type="url"
-                        id="imageUrl"
-                        name="imageUrl"
-                        value={formData.imageUrl}
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
                         onChange={handleChange}
+                        className="file-input"
                     />
+                    {formData.imagePreview && (
+                        <div className="image-preview">
+                            <img 
+                                src={formData.imagePreview} 
+                                alt="Preview" 
+                                style={{ maxWidth: '200px', marginTop: '10px' }}
+                            />
+                        </div>
+                    )}
                 </div>
 
                 <button type="submit" className="submit-button" disabled={loading}>
