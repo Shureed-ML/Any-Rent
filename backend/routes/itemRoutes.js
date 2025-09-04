@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Item = require('../models/Item');
+const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
@@ -111,7 +112,13 @@ router.put('/:id', verifyToken, async (req, res) => {
     try {
         const item = await Item.findById(req.params.id);
         if (!item) return res.status(404).json({ error: 'Item not found' });
-        if (item.owner.toString() !== req.userId) return res.status(403).json({ error: 'Unauthorized' });
+
+        // Check if user owns the item or is admin
+        const user = await User.findById(req.userId);
+        if (item.owner.toString() !== req.userId && !user.isAdmin) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
         Object.assign(item, req.body);
         const updatedItem = await item.save();
         res.status(200).json(updatedItem);
@@ -122,18 +129,26 @@ router.put('/:id', verifyToken, async (req, res) => {
 
 // Delete an item
 router.delete('/:id', verifyToken, async (req, res) => {
-    console.log('DELETE /items/' + req.params.id, 'User:', req.userId);
-    const item = await Item.findById(req.params.id);
-    if (!item) {
-        console.log('Item not found:', req.params.id);
-        return res.status(404).json({ error: 'Item not found' });
+    try {
+        console.log('DELETE /items/' + req.params.id, 'User:', req.userId);
+        const item = await Item.findById(req.params.id);
+        if (!item) {
+            console.log('Item not found:', req.params.id);
+            return res.status(404).json({ error: 'Item not found' });
+        }
+
+        // Check if user owns the item or is admin
+        const user = await User.findById(req.userId);
+        if (item.owner.toString() !== req.userId && !user.isAdmin) {
+            console.log('Unauthorized delete attempt by user:', req.userId, 'for item:', req.params.id);
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+
+        await item.deleteOne();
+        res.status(200).json({ message: 'Item deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    if (item.owner.toString() !== req.userId) {
-        console.log('Unauthorized delete attempt by user:', req.userId, 'for item:', req.params.id);
-        return res.status(403).json({ error: 'Unauthorized' });
-    }
-    await item.deleteOne();
-    res.status(200).json({ message: 'Item deleted successfully' });
 });
 
 module.exports = router;

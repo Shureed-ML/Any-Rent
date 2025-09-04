@@ -1,0 +1,150 @@
+.review-management {
+    max-width: 1200px;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.review-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    border: 1px solid #e1e8ed;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rating-number {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.review-date {
+    color: #7f8c8d;
+    font-size: 0.85rem;
+}
+
+.review-content {
+    margin-bottom: 1rem;
+}
+
+.review-comment {
+    color: #2c3e50;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.review-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    gap: 1rem;
+}
+
+.review-user,
+.review-item {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.review-user {
+    font-weight: 500;
+}
+
+.review-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 3rem;
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    border: 1px solid #e1e8ed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .review-card {
+        padding: 1rem;
+    }
+    
+    .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .review-rating {
+        font-size: 0.9rem;
+    }
+    
+    .review-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .review-comment {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-card {
+        padding: 0.75rem;
+    }
+    
+    .review-comment {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .review-meta {
+        padding: 0.5rem;
+    }
+    
+    .review-user,
+    .review-item {
+        font-size: 0.8rem;
+    }
+}

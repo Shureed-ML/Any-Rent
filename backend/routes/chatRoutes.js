@@ -48,6 +48,7 @@ router.get('/messages/:otherUserId', auth, async (req, res) => {
     try {
         const otherUserId = req.params.otherUserId;
         const { itemId } = req.query;
+
         
         // Find messages where:
         // (user is sender AND otherUser is receiver) OR
@@ -160,6 +161,7 @@ router.post('/notify-test', auth, async (req, res) => {
 router.get('/inbox', auth, async (req, res) => {
     try {
         const userId = req.user.id;
+
         const userObjectId = new mongoose.Types.ObjectId(String(userId));
 
         // Aggregate to find the last message per conversation partner

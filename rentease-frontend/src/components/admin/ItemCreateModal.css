@@ -1,0 +1,38 @@
+/* Import styles from ItemEditModal.css */
+@import './ItemEditModal.css';
+
+/* Additional styles specific to create modal */
+.create-form .form-group:last-of-type {
+    margin-bottom: 2rem;
+}
+
+.create-form .file-input {
+    position: relative;
+}
+
+.create-form .file-input::before {
+    content: '📁 Choose Image File';
+    display: block;
+    padding: 0.5rem;
+    text-align: center;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.create-form .file-input:hover::before {
+    color: #667eea;
+}
+
+.create-form .form-group label[for="ownerId"] {
+    color: #7f8c8d;
+}
+
+.create-form input[name="ownerId"] {
+    border-style: dashed;
+    background: #f8f9fa;
+}
+
+.create-form input[name="ownerId"]:focus {
+    background: white;
+    border-style: solid;
+}

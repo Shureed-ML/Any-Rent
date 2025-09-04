@@ -6,9 +6,12 @@ import Register from "./components/Register.jsx";
 import BrowseItems from "./components/BrowseItems.jsx";
 import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import AdminRoute from "./components/admin/AdminRoute.jsx";
+import AdminLayout from "./components/admin/AdminLayout.jsx";
 import { loginUser, registerUser } from "./services/api.js";
 import './App.css';
 import UserProfile from "./components/UserProfile.jsx";
+import UserSettings from "./components/UserSettings.jsx";
 import ItemDetails from "./components/ItemDetails.jsx";
 import Inbox from "./components/Inbox.jsx";
 import ChatPage from "./components/ChatPage.jsx";
@@ -108,13 +111,21 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <ProtectedRoute user={user}>
               <UserProfile user={user} />
             </ProtectedRoute>
-          } 
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute user={user}>
+              <UserSettings user={user} setUser={setUser} handleLogout={handleLogout} />
+            </ProtectedRoute>
+          }
         />
         <Route 
           path="/inbox"
@@ -140,10 +151,18 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route 
-          path="/product/:id" 
+        <Route
+          path="/product/:id"
           element={
             <ItemDetails user={user} />
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute user={user}>
+              <AdminLayout user={user} handleLogout={handleLogout} />
+            </AdminRoute>
           }
         />
         <Route path="/login" element={

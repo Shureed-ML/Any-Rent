@@ -258,3 +258,59 @@ export const deleteReview = async (reviewId) => {
         throw error;
     }
 };
+
+// User profile management
+export const updateUserProfile = async (profileData) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/users/profile`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(profileData)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to update profile');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const changePassword = async (passwordData) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/users/change-password`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(passwordData)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to change password');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteAccount = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/users/account`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to delete account');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
