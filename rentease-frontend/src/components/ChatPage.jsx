@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getItem } from '../services/api';
 import { sendMessage, getMessages } from '../services/chatApi';
 import './ChatPage.css';
-
+//This is the change
 const ChatPage = ({ user }) => {
     const { otherUserId, itemId } = useParams();
     const navigate = useNavigate();
