@@ -1,0 +1,127 @@
+.profile-container {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+}
+
+.profile-header {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px -10px rgba(50, 51, 51, 0.08);
+    border: 1px solid #eaeaea;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background-color: #4A2D4E;
+    color: #FDFDF8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.profile-info h2 {
+    margin: 0 0 0.5rem 0;
+    color: #323333;
+    font-size: 2rem;
+}
+
+.profile-info p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1.1rem;
+}
+
+.profile-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.profile-tab-btn {
+    background: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.profile-tab-btn:hover {
+    color: #323333;
+}
+
+.profile-tab-btn.active {
+    color: #4A2D4E;
+    font-weight: 600;
+}
+
+.profile-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #4A2D4E;
+    border-radius: 3px 3px 0 0;
+}
+
+.profile-section {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px -10px rgba(50, 51, 51, 0.08);
+    border: 1px solid #eaeaea;
+    min-height: 400px;
+}
+
+.section-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6b7280;
+    font-size: 1.1rem;
+    padding: 4rem 0;
+}
+
+.return-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: #e53e3e;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 10;
+}
+
+.return-btn:hover {
+    background-color: #c53030;
+}
+
+.item-date {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}

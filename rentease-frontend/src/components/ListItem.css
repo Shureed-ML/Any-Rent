@@ -1,35 +1,38 @@
 .list-item-container {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
+    max-width: 650px;
+    margin: 4rem auto;
+    padding: 3rem;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px -10px rgba(50, 51, 51, 0.08);
+    border: 1px solid #eaeaea;
 }
 
 .list-item-container h2 {
     text-align: center;
-    margin-bottom: 2rem;
-    color: #333;
-    font-size: 1.75rem;
+    margin-bottom: 2.5rem;
+    color: #323333;
+    font-size: 2.25rem;
 }
 
 .success-message {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #edf7ed;
+    color: #1e4620;
     padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
     text-align: center;
+    border: 1px solid #c8e6c9;
 }
 
 .error-message {
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: #fdeded;
+    color: #5f2120;
     padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
     text-align: center;
+    border: 1px solid #f4c7c7;
 }
 
 .list-item-form {
@@ -42,32 +45,37 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    text-align: left;
 }
 
 .form-group label {
     font-weight: 500;
-    color: #333;
-    font-size: 1rem;
+    color: #323333;
+    font-size: 0.95rem;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
     font-size: 1rem;
-    color: #000000;
-    background-color: #ffffff;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #323333;
+    background-color: #FDFDF8;
+    transition: all 0.2s ease;
+    font-family: inherit;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    border-color: #4A2D4E;
+    box-shadow: 0 0 0 3px rgba(74, 45, 78, 0.1);
+    background-color: #ffffff;
 }
 
 .form-group textarea {
@@ -76,73 +84,71 @@
 }
 
 .submit-button {
-    background-color: #007bff;
-    color: white;
+    background-color: #4A2D4E;
+    color: #FDFDF8;
     border: none;
     padding: 1rem;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #3c243f;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 45, 78, 0.2);
+}
+
+.submit-button:disabled {
+    background-color: #a497a6;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.file-input {
+    padding: 0.5rem;
+    background-color: #FDFDF8;
+}
+
+.file-input::-webkit-file-upload-button {
+    background: #4A2D4E;
+    color: #FDFDF8;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    margin-right: 1rem;
+    cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s;
 }
 
-.submit-button:hover:not(:disabled) {
-    background-color: #0056b3;
-}
-
-.submit-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-    opacity: 0.8;
-}
-
-.file-input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 100%;
-}
-
-.file-input::-webkit-file-upload-button {
-    background: #007bff;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    margin-right: 16px;
-    cursor: pointer;
+.file-input::-webkit-file-upload-button:hover {
+    background: #3c243f;
 }
 
 .image-preview {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     text-align: center;
 }
 
 .image-preview img {
     max-width: 100%;
-    max-height: 200px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 640px) {
     .list-item-container {
-        margin: 1rem;
-        padding: 1rem;
+        margin: 2rem 1rem;
+        padding: 2rem 1.5rem;
     }
 
     .list-item-container h2 {
-        font-size: 1.5rem;
-    }
-
-    .form-group label {
-        font-size: 0.9rem;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-        font-size: 0.9rem;
+        font-size: 1.75rem;
     }
 }
