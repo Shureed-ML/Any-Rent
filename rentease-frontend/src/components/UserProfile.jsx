@@ -3,23 +3,20 @@ import { getUserItems } from '../services/api';
 import { getWishlist, removeFromWishlist } from '../services/wishlistApi';
 import { getRentedItems, returnItem } from '../services/rentalApi';
 import './BrowseItems.css';
+import './UserProfile.css';
 import { Link } from 'react-router-dom';
 
 const UserProfile = ({ user }) => {
   const [items, setItems] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [rentedItems, setRentedItems] = useState([]);
+  
   const [loading, setLoading] = useState(true);
   const [wishlistLoading, setWishlistLoading] = useState(true);
   const [rentedLoading, setRentedLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Collapsible state
-  const [showInfo, setShowInfo] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [showItems, setShowItems] = useState(false);
-  const [showWishlist, setShowWishlist] = useState(false);
-  const [showRented, setShowRented] = useState(false);
+  const [activeTab, setActiveTab] = useState('posted'); // 'posted', 'wishlist', 'rented'
 
   useEffect(() => {
     if (user) {
@@ -66,7 +63,8 @@ const UserProfile = ({ user }) => {
     }
   };
 
-  const handleRemoveFromWishlist = async (itemId) => {
+  const handleRemoveFromWishlist = async (itemId, e) => {
+    e.preventDefault();
     try {
       await removeFromWishlist(itemId);
       setWishlist(wishlist.filter(item => item.itemId._id !== itemId));
@@ -75,11 +73,9 @@ const UserProfile = ({ user }) => {
     }
   };
 
-  const handleReturnItem = async (rentalId) => {
-    if (!window.confirm('Are you sure you want to return this item?')) {
-      return;
-    }
-
+  const handleReturnItem = async (rentalId, e) => {
+    e.preventDefault();
+    if (!window.confirm('Are you sure you want to return this item?')) return;
     try {
       await returnItem(rentalId);
       setRentedItems(rentedItems.filter(rental => rental._id !== rentalId));
@@ -91,177 +87,53 @@ const UserProfile = ({ user }) => {
   };
 
   if (!user) {
-    return <div style={{ color: '#111' }}>Please log in to view your profile.</div>;
+    return <div className="section-empty">Please log in to view your profile.</div>;
   }
 
   return (
-    <div style={{ color: '#111', margin: '2rem 0' }}>
-      <h2 style={{ marginBottom: '1.5rem', color: '#111' }}>User Profile</h2>
-      {/* Collapsible: Basic Info */}
-      <div style={{ marginBottom: '1rem', borderBottom: '1px solid #eee' }}>
-        <button onClick={() => setShowInfo(v => !v)} style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', padding: 0, marginBottom: 8, color: '#111' }}>
-          {showInfo ? '▼' : '►'} Basic Information
-        </button>
-        {showInfo && (
-          <div style={{ marginLeft: 20, marginBottom: 12, color: '#111' }}>
-            <p><strong>Username:</strong> {user.username}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-          </div>
-        )}
+    <div className="profile-container">
+      <div className="profile-header">
+        <div className="profile-avatar">
+          {user.username.charAt(0).toUpperCase()}
+        </div>
+        <div className="profile-info">
+          <h2>{user.username}</h2>
+          <p>{user.email}</p>
+        </div>
       </div>
-      {/* Collapsible: Settings */}
-      <div style={{ marginBottom: '1rem', borderBottom: '1px solid #eee' }}>
-        <button onClick={() => setShowSettings(v => !v)} style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', padding: 0, marginBottom: 8, color: '#111' }}>
-          {showSettings ? '▼' : '►'} User Settings
-        </button>
-        {showSettings && (
-          <div style={{ marginLeft: 20, marginBottom: 12, color: '#111' }}>
-            <p>Settings functionality coming soon...</p>
-          </div>
-        )}
-      </div>
-      {/* Collapsible: Wishlist */}
-      <div style={{ marginBottom: '1rem', borderBottom: '1px solid #eee' }}>
-        <button onClick={() => setShowWishlist(v => !v)} style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', padding: 0, marginBottom: 8, color: '#111' }}>
-          {showWishlist ? '▼' : '►'} Your Wishlist
-        </button>
-        {showWishlist && (
-          <div style={{ marginLeft: 20, marginBottom: 12, color: '#111' }}>
-            {wishlistLoading ? (
-              <div className="loading-message" style={{ color: '#111' }}>Loading wishlist...</div>
-            ) : wishlist.length === 0 ? (
-              <div className="empty-message" style={{ color: '#111' }}>Your wishlist is empty.</div>
-            ) : (
-              <div className="item-grid">
-                {wishlist.map((wishlistItem) => {
-                  const item = wishlistItem.itemId;
-                  return (
-                    <div key={wishlistItem._id} className="item-card" style={{ position: 'relative' }}>
 
-                      <Link to={`/product/${item._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        {item.imageUrl && (
-                          <div className="item-image" style={{ 
-                            width: '120px', 
-                            height: '120px', 
-                            margin: '0 auto 10px auto',
-                            overflow: 'hidden',
-                            borderRadius: '8px'
-                          }}>
-                            <img 
-                              src={item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:5000${item.imageUrl}`} 
-                              alt={item.title}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                              }}
-                            />
-                          </div>
-                        )}
-                        <h3 className="item-title" style={{ color: '#111' }}>{item.title}</h3>
-                        <p className="item-description" style={{ color: '#111' }}>{item.description}</p>
-                        <div className="item-meta" style={{ color: '#111' }}>
-                          <span className="item-price">${parseFloat(item.price).toFixed(2)} / day</span>
-                          <span className="item-category">{item.category}</span>
-                        </div>
-                        <p className="item-location" style={{ color: '#111' }}>{item.location}</p>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-      {/* Collapsible: Rented Items */}
-      <div style={{ marginBottom: '1rem', borderBottom: '1px solid #eee' }}>
-        <button onClick={() => setShowRented(v => !v)} style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', padding: 0, marginBottom: 8, color: '#111' }}>
-          {showRented ? '▼' : '►'} Your Rented Items
+      <div className="profile-tabs">
+        <button 
+          className={`profile-tab-btn ${activeTab === 'posted' ? 'active' : ''}`}
+          onClick={() => setActiveTab('posted')}
+        >
+          Posted Items
         </button>
-        {showRented && (
-          <div style={{ marginLeft: 20, marginBottom: 12, color: '#111' }}>
-            {rentedLoading ? (
-              <div className="loading-message" style={{ color: '#111' }}>Loading rented items...</div>
-            ) : rentedItems.length === 0 ? (
-              <div className="empty-message" style={{ color: '#111' }}>You haven't rented any items yet.</div>
-            ) : (
-              <div className="item-grid">
-                {rentedItems.map((rental) => {
-                  const item = rental.itemId;
-                  return (
-                    <div key={rental._id} className="item-card" style={{ position: 'relative' }}>
-                      <button
-                        onClick={() => handleReturnItem(rental._id)}
-                        style={{
-                          position: 'absolute',
-                          top: '10px',
-                          right: '10px',
-                          background: '#28a745',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          padding: '5px 10px',
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          fontWeight: 'bold'
-                        }}
-                        title="Return item"
-                      >
-                        Return
-                      </button>
-                      <Link to={`/product/${item._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        {item.imageUrl && (
-                          <div className="item-image" style={{ 
-                            width: '120px', 
-                            height: '120px', 
-                            margin: '0 auto 10px auto',
-                            overflow: 'hidden',
-                            borderRadius: '8px'
-                          }}>
-                            <img 
-                              src={item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:5000${item.imageUrl}`} 
-                              alt={item.title}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                              }}
-                            />
-                          </div>
-                        )}
-                        <h3 className="item-title" style={{ color: '#111' }}>{item.title}</h3>
-                        <p className="item-description" style={{ color: '#111' }}>{item.description}</p>
-                        <div className="item-meta" style={{ color: '#111' }}>
-                          <span className="item-price">${parseFloat(item.price).toFixed(2)} / day</span>
-                          <span className="item-category">{item.category}</span>
-                        </div>
-                        <p className="item-location" style={{ color: '#111' }}>{item.location}</p>
-                        <p style={{ color: '#666', fontSize: '0.9rem' }}>
-                          Rented on: {new Date(rental.rentalDate).toLocaleDateString()}
-                        </p>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-      {/* Collapsible: Posted Items */}
-      <div style={{ marginBottom: '1rem' }}>
-        <button onClick={() => setShowItems(v => !v)} style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', padding: 0, marginBottom: 8, color: '#111' }}>
-          {showItems ? '▼' : '►'} Your Posted Items
+        <button 
+          className={`profile-tab-btn ${activeTab === 'wishlist' ? 'active' : ''}`}
+          onClick={() => setActiveTab('wishlist')}
+        >
+          Wishlist
         </button>
-        {showItems && (
-          <div style={{ marginLeft: 20, marginBottom: 12, color: '#111' }}>
+        <button 
+          className={`profile-tab-btn ${activeTab === 'rented' ? 'active' : ''}`}
+          onClick={() => setActiveTab('rented')}
+        >
+          Rented Items
+        </button>
+      </div>
+
+      <div className="profile-section">
+        
+        {/* POSTED ITEMS TAB */}
+        {activeTab === 'posted' && (
+          <div>
             {loading ? (
-              <div className="loading-message" style={{ color: '#111' }}>Loading your items...</div>
+              <div className="section-empty">Loading your items...</div>
             ) : error ? (
-              <div className="error-message" style={{ color: '#111' }}>{error}</div>
+              <div className="error-message">{error}</div>
             ) : items.length === 0 ? (
-              <div className="empty-message" style={{ color: '#111' }}>You haven't posted any items yet.</div>
+              <div className="section-empty">You haven't posted any items yet.</div>
             ) : (
               <div className="item-grid">
                 {items.map((item) => (
@@ -275,14 +147,14 @@ const UserProfile = ({ user }) => {
                           />
                         </div>
                       )}
-                      <h3 className="item-title" style={{ color: '#111' }}>{item.title}</h3>
-                      <p className="item-description" style={{ color: '#111' }}>{item.description}</p>
-                      <div className="item-meta" style={{ color: '#111' }}>
+                      <h3 className="item-title">{item.title}</h3>
+                      <p className="item-description">{item.description}</p>
+                      <div className="item-meta">
                         <span className="item-price">${parseFloat(item.price).toFixed(2)} / day</span>
                         <span className="item-category">{item.category}</span>
                       </div>
-                      <p className="item-location" style={{ color: '#111' }}>{item.location}</p>
-                      <p className="item-date" style={{ color: '#111' }}>Listed on: {new Date(item.createdAt).toLocaleDateString()}</p>
+                      <p className="item-location">{item.location}</p>
+                      <p className="item-date">Listed on: {new Date(item.createdAt).toLocaleDateString()}</p>
                     </div>
                   </Link>
                 ))}
@@ -290,6 +162,102 @@ const UserProfile = ({ user }) => {
             )}
           </div>
         )}
+
+        {/* WISHLIST TAB */}
+        {activeTab === 'wishlist' && (
+          <div>
+            {wishlistLoading ? (
+              <div className="section-empty">Loading wishlist...</div>
+            ) : wishlist.length === 0 ? (
+              <div className="section-empty">Your wishlist is empty.</div>
+            ) : (
+              <div className="item-grid">
+                {wishlist.map((wishlistItem) => {
+                  const item = wishlistItem.itemId;
+                  if (!item) return null;
+                  return (
+                    <Link to={`/product/${item._id}`} key={wishlistItem._id} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className="item-card">
+                        <button 
+                          className="return-btn" 
+                          style={{ backgroundColor: '#6b7280' }} 
+                          onClick={(e) => handleRemoveFromWishlist(item._id, e)}
+                        >
+                          Remove
+                        </button>
+                        {item.imageUrl && (
+                          <div className="item-image">
+                            <img 
+                              src={item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:5000${item.imageUrl}`} 
+                              alt={item.title}
+                            />
+                          </div>
+                        )}
+                        <h3 className="item-title">{item.title}</h3>
+                        <p className="item-description">{item.description}</p>
+                        <div className="item-meta">
+                          <span className="item-price">${parseFloat(item.price).toFixed(2)} / day</span>
+                          <span className="item-category">{item.category}</span>
+                        </div>
+                        <p className="item-location">{item.location}</p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* RENTED ITEMS TAB */}
+        {activeTab === 'rented' && (
+          <div>
+            {rentedLoading ? (
+              <div className="section-empty">Loading rented items...</div>
+            ) : rentedItems.length === 0 ? (
+              <div className="section-empty">You haven't rented any items yet.</div>
+            ) : (
+              <div className="item-grid">
+                {rentedItems.map((rental) => {
+                  const item = rental.itemId;
+                  if (!item) return null;
+                  return (
+                    <Link to={`/product/${item._id}`} key={rental._id} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className="item-card">
+                        <button
+                          className="return-btn"
+                          onClick={(e) => handleReturnItem(rental._id, e)}
+                          title="Return item"
+                        >
+                          Return
+                        </button>
+                        {item.imageUrl && (
+                          <div className="item-image">
+                            <img 
+                              src={item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:5000${item.imageUrl}`} 
+                              alt={item.title}
+                            />
+                          </div>
+                        )}
+                        <h3 className="item-title">{item.title}</h3>
+                        <p className="item-description">{item.description}</p>
+                        <div className="item-meta">
+                          <span className="item-price">${parseFloat(item.price).toFixed(2)} / day</span>
+                          <span className="item-category">{item.category}</span>
+                        </div>
+                        <p className="item-location">{item.location}</p>
+                        <p className="item-date">
+                          Rented on: {new Date(rental.rentalDate).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
     </div>
   );

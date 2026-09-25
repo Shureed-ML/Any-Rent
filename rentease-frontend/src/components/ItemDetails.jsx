@@ -23,6 +23,7 @@ const ItemDetails = ({ user }) => {
     const [inWishlist, setInWishlist] = useState(false);
     const [wishlistLoading, setWishlistLoading] = useState(false);
     const [isRented, setIsRented] = useState(false);
+    const [rentalDetails, setRentalDetails] = useState(null);
     const [rentalLoading, setRentalLoading] = useState(false);
 
     const handleEdit = () => {
@@ -89,6 +90,9 @@ const ItemDetails = ({ user }) => {
                 try {
                     const rentalStatus = await checkRentalStatus(id);
                     setIsRented(rentalStatus.isRented);
+                    if (rentalStatus.isRented && rentalStatus.rental) {
+                        setRentalDetails(rentalStatus.rental);
+                    }
                 } catch (rentalErr) {
                     console.error('Failed to check rental status:', rentalErr);
                 }
@@ -324,16 +328,16 @@ const ItemDetails = ({ user }) => {
                                         className={`wishlist-button ${inWishlist ? 'in-wishlist' : ''}`}
                                         style={{
                                             padding: '0.75rem 1.5rem',
-                                            background: inWishlist ? '#dc3545' : '#28a745',
-                                            color: 'white',
+                                            background: inWishlist ? '#dc3545' : (isRented ? '#6c757d' : '#4A2D4E'),
+                                            color: '#FDFDF8',
                                             border: 'none',
-                                            borderRadius: '0.375rem',
+                                            borderRadius: '8px',
                                             fontWeight: '500',
                                             cursor: wishlistLoading ? 'not-allowed' : 'pointer',
                                             opacity: wishlistLoading ? 0.7 : 1
                                         }}
                                     >
-                                        {wishlistLoading ? 'Updating...' : (inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist')}
+                                        {wishlistLoading ? 'Updating...' : (inWishlist ? 'Remove from Wishlist' : (isRented && rentalDetails ? `Add to Wishlist (Available ~${new Date(new Date(rentalDetails.rentalDate).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()})` : 'Add to Wishlist'))}
                                     </button>
                                 </div>
                             )}
